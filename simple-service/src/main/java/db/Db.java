@@ -40,7 +40,6 @@ public class Db extends HashMap<Integer,DbFile>{
     @Path("/auth")
     @Produces(MediaType.APPLICATION_JSON)
     public String auth() {
-//    	String str = "";
     	String authtokenrequest = "https://accounts.google.com/o/oauth2/v2/auth?"
     			+"client_id="+clientId
     			+"&redirect_uri="+redirectUri
@@ -48,38 +47,18 @@ public class Db extends HashMap<Integer,DbFile>{
     			+"&state=state1"
     			+"&include_granted_scopes=true"
     			+"&scope=https://www.googleapis.com/auth/drive";
-//    	URL url;
-//		try {
-//			url = new URL(authtokenrequest);
-//			HttpURLConnection con = (HttpURLConnection) url.openConnection();
-//			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-//			String inputLine;
-//			StringBuffer response = new StringBuffer();
-//			
-//			while ((inputLine = in.readLine()) != null) {
-//				response.append(inputLine);
-//			}
-//			in.close();
-//
-//			//print result
-//			str = response.toString();
-//			System.out.println(str);
-//		} catch (MalformedURLException e) {
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}finally {
-//			return str;
-//		}
-    	return authtokenrequest;
+		System.out.println("auth");
+    	System.out.println(authtokenrequest);
+    	return authtokenrequest;//front-end will open a tab containing this string
     }
 	
-	@SuppressWarnings("finally")
 	@GET
-	@Path("/validateAuth?access_token={token}")
+	@Path("/validateAuth/access_token={token}")
 	public String validateAuth(@PathParam("token") String token) {
 		String pageToken = "";
+		System.out.println("validateAuth");
 		String uri = "https://www.googleapis.com/oauth2/v3/tokeninfo?access_token="+token;
+		System.out.println(uri);
     	URL url;
 		try {
 			url = new URL(uri);
@@ -100,8 +79,37 @@ public class Db extends HashMap<Integer,DbFile>{
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}finally {
+		} finally {
 			return pageToken;
+		}
+	}
+	
+	
+	@POST 
+	@Path("/uploadFile")
+	public void uploadFile() {
+		String uri = "https://www.googleapis.com/upload/drive/v3/files?uploadType=media";
+	}
+
+	
+	/**
+	 * not working
+	 */
+	@DELETE
+	@Path("/deleteFile/fileID={id}")
+	public void deleteFile(@PathParam("id") String id) {
+		System.out.println("deleteFile");
+		String uri = "https://www.googleapis.com/drive/v3/files/"+id;
+		System.out.println(uri);
+    	URL url;
+		try {
+			url = new URL(uri);
+			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -120,6 +128,41 @@ public class Db extends HashMap<Integer,DbFile>{
 
         return r+"}";
     }
+    
+    /**
+     * calling this func will return the URI where you can read the JSON containing all files of the user
+     */
+    @GET
+    @Path("/allFiles/access_token={token}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String allFiles(@PathParam("token") String token) {
+    	String allFiles = "";
+    	String get = "https://www.googleapis.com/drive/v2/files?access_token="+token;
+    	System.out.println(get);
+    	URL url;
+		try {
+			url = new URL(get);
+			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			String inputLine;
+			StringBuffer response = new StringBuffer();
+			
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+			in.close();
+
+			//print result
+			allFiles = response.toString();
+			System.out.println(allFiles);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			return allFiles;
+		}
+    }
 
     @GET
     @Path("/sortedID")
@@ -137,7 +180,7 @@ public class Db extends HashMap<Integer,DbFile>{
     }
     
     @GET
-    @Path("{id}")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public String foo(@PathParam("id") int id){
         return "{"+getFile(id)+"}";
