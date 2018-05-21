@@ -1,14 +1,12 @@
 package db;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.*;
+import java.net.*;
 import java.util.*;
 import javax.ws.rs.*;
+import javax.ws.rs.client.*;
 import javax.ws.rs.core.*;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import javax.ws.*;
 
 
 /** Stocke les éléments récupérés par GET dans les différents drive
@@ -85,32 +83,65 @@ public class Db extends HashMap<Integer,DbFile>{
 	}
 	
 	
-	@POST 
+	@GET
 	@Path("/uploadFile")
 	public void uploadFile() {
 		String uri = "https://www.googleapis.com/upload/drive/v3/files?uploadType=media";
 	}
 
+
+	@GET
+	@Path("/uploadFile/access_token={token}/uploadType={uploadType}")
+	public void uploadFile(@PathParam("token") String token,@PathParam("uploadType") String uploadType) {
+		System.out.println("uploadFile");
+		String uri = "https://www.googleapis.com/upload/drive/v3/files";
+		System.out.println(uri);
+
+		File file = new File("img.png");
+		
+		Client client = ClientBuilder.newClient();
+		Response entity = client.target(uri)
+				.queryParam("uploadType",uploadType)
+				.request(MediaType.APPLICATION_JSON_TYPE)
+				.header("Authorization","Bearer "+token)
+				.post(Entity.entity(file,MediaType.APPLICATION_OCTET_STREAM),Response.class);
+		
+		System.out.println(entity.readEntity(String.class));
+	}
 	
-	/**
-	 * not working
-	 */
-	@DELETE
-	@Path("/deleteFile/fileID={id}")
-	public void deleteFile(@PathParam("id") String id) {
+	@GET
+	@Path("/copyFile/fileID={id}/access_token={token}")
+	public void copyFile(@PathParam("id") String id,@PathParam("token") String token) {
+		System.out.println("copyFile");
+		String uri = "https://www.googleapis.com/drive/v3/files/"+id+"/copy";
+		System.out.println(uri);
+
+		Client client = ClientBuilder.newClient();
+		Response entity = client.target(uri)
+				.queryParam("supportsTeamDrives",false)
+				.request(MediaType.APPLICATION_JSON_TYPE)
+				.header("Authorization","Bearer "+token)
+				.header("Content-Length",0)
+				.post(null,Response.class);
+		
+		System.out.println(entity.readEntity(String.class));
+	}
+	
+	@GET
+	@Path("/deleteFile/fileID={id}/access_token={token}")
+	public void deleteFile(@PathParam("id") String id,@PathParam("token") String token) {
 		System.out.println("deleteFile");
 		String uri = "https://www.googleapis.com/drive/v3/files/"+id;
 		System.out.println(uri);
-    	URL url;
-		try {
-			url = new URL(uri);
-			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		Client client = ClientBuilder.newClient();
+		String entity = client.target(uri)
+				.queryParam("supportsTeamDrives",false)
+				.request(MediaType.APPLICATION_JSON_TYPE)
+				.header("Authorization","Bearer "+token)
+				.delete(String.class);
+		
+		System.out.println(entity);
 	}
 	
     @GET
