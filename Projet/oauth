@@ -1,0 +1,5 @@
+S'inscrire sur la console googlee => un id, une clé crypto
+
+dans la lib on créé un nouveau client > id client
+
+arrive sur notre site > on créé le client oauth > url pour le rediriger > /oauthcallback
