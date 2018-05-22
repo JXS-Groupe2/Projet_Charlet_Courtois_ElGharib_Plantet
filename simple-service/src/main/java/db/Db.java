@@ -82,14 +82,6 @@ public class Db extends HashMap<Integer,DbFile>{
 		}
 	}
 	
-	
-	@GET
-	@Path("/uploadFile")
-	public void uploadFile() {
-		String uri = "https://www.googleapis.com/upload/drive/v3/files?uploadType=media";
-	}
-
-
 	@GET
 	@Path("/uploadFile/access_token={token}/uploadType={uploadType}")
 	public void uploadFile(@PathParam("token") String token,@PathParam("uploadType") String uploadType) {
