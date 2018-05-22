@@ -13,34 +13,21 @@ class App extends React.Component {
   
 
   public render() {
-    /*
-    function loadHTML()
-    {
-      let xhr = new XMLHttpRequest()
-      xhr.onreadystatechange=function()
-      { 
-        if(xhr.readyState == 4)
-        {
-          if(xhr.status == 200)
-          {
-            console.log("Test : " + xhr.responseText);
-          }
-        } 
-      }; 
-      
-      xhr.open("GET", "http://www.google.com" , true);
-      xhr.send(null); 
-    }
 
-    loadHTML()
-    */
 
 
     //const files = ["docA","docB","DocC"];
+    //On récupère les inforlations du drive
     let json = require('./Result.json');
+
+    //tableau contenant les fichiers
     let filesArray:Files = new Files();
+
+    //Essai utilisation des dossiers
     //let folderArray:Folder = new Folder(new Files());
     //filesArray.list=[];
+
+    //On boucle sur les fichiers dans "items[]" pour y récupérer les informations de base
     for(var file in json.items){
       console.log(json.items[file].name);
 
@@ -59,7 +46,7 @@ class App extends React.Component {
     //console.log(json.name);
 
 
-    
+    //Affichage des boutons avec les inforlations récuoérées sur le json
     const filesButtons = filesArray.list.map((filename) => {
       
       return (

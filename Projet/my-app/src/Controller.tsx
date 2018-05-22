@@ -1,3 +1,6 @@
+//Essai pour les login
+// Abandonné pour se concentrer sur les fonctionnalités de base
+
 /*
 import {Login} from "./Model";
 export class Main{

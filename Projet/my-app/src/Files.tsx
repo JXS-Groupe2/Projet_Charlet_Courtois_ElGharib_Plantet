@@ -1,4 +1,4 @@
-
+//classe File
 export class File{
     private name:string;
     private tailleoctet:number;
@@ -29,7 +29,7 @@ export class File{
     }
 }
 
-
+//Classe contanant tous kes files
 export class Files{
     list:Array<File> = [];
 
@@ -38,6 +38,7 @@ export class Files{
     }
 }
 
+/*
 export class Folder{
     private files:Files;
 
@@ -50,3 +51,4 @@ export class Folder{
     }
 
 }
+*/
