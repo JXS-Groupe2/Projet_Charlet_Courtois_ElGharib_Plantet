@@ -61,9 +61,10 @@ class App extends React.Component {
 
     
     const filesButtons = filesArray.list.map((filename) => {
+      
       return (
         <li>
-          <button>{filename.getName()+ " " + filename.getTaille() + " Octets"}</button>
+          <button>{filename.getName()+ " " + (filename.getTaille()==undefined?0:filename.getTaille()) + " Octets"}</button>
         </li>
       );
     });

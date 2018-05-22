@@ -7,6 +7,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.client.*;
 import javax.ws.rs.core.*;
 import javax.ws.*;
+import org.glassfish.jersey.media.multipart.*;
 
 
 /** Stocke les éléments récupérés par GET dans les différents drive
@@ -83,8 +84,8 @@ public class Db extends HashMap<Integer,DbFile>{
 	}
 	
 	@GET
-	@Path("/uploadFile/access_token={token}/uploadType={uploadType}")
-	public void uploadFile(@PathParam("token") String token,@PathParam("uploadType") String uploadType) {
+	@Path("/uploadFile/access_token={token}/title={title}")
+	public void uploadFile(@PathParam("token") String token,@PathParam("title") String title) {
 		System.out.println("uploadFile");
 		String uri = "https://www.googleapis.com/upload/drive/v3/files";
 		System.out.println(uri);
@@ -92,13 +93,20 @@ public class Db extends HashMap<Integer,DbFile>{
 		File file = new File("img.png");
 		
 		Client client = ClientBuilder.newClient();
+		
+//		FormDataMultiPart fdmp = new FormDataMultiPart().field("file",file,MediaType.APPLICATION_OCTET_STREAM_TYPE)
+//				.field("name",title,MediaType.TEXT_PLAIN_TYPE);
+		
 		Response entity = client.target(uri)
-				.queryParam("uploadType",uploadType)
+				.queryParam("uploadType","multipart")
 				.request(MediaType.APPLICATION_JSON_TYPE)
 				.header("Authorization","Bearer "+token)
 				.post(Entity.entity(file,MediaType.APPLICATION_OCTET_STREAM),Response.class);
+//				.post(fdmp,String.class);
+
 		
-		System.out.println(entity.readEntity(String.class));
+//		System.out.println(entity.readEntity(String.class));
+		System.out.println(entity);
 	}
 	
 	@GET
